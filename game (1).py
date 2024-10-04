@@ -6,7 +6,6 @@ from math import atan2
 
 import numpy as np
 import rospy
-import time
 from PIL.SpiderImagePlugin import isInt
 from docutils.parsers.rst.states import InterpretedRoleNotImplementedError
 from gazebo_msgs.msg import *
@@ -617,18 +616,19 @@ def prever_direcao_chute(atacante_inimigo):
 # Função para a execução de um pênalti a favor
 def penalti_nosso():
     id_atacante = 1  # Supondo que o atacante seja o jogador 1
-    tempo_inicio = time.time()
+    tempo_inicio = rospy.Time.now()  # Obtém o tempo de início usando o tempo do ROS
     
     # Posiciona a bola no ponto de pênalti (coordenadas específicas da sua configuração)
     p_bola[0], p_bola[1] = 6000, 0  # (6, 0) é o ponto de pênalti no campo
     
     # Espera 10 segundos antes de permitir o chute
-    while time.time() - tempo_inicio < 10:
+    while (rospy.Time.now() - tempo_inicio).to_sec() < 10:  # Verifica a diferença em segundos
         move(id_atacante, (p_bola[0], p_bola[1]), 0, 0, 0, 0, True)
         # O atacante se move para a posição da bola e aguarda
     
     # Após 10 segundos, o atacante chuta
     chutar(id_atacante)
+
 
 # Função para a execução de um pênalti contra
 def penalti_deles():
