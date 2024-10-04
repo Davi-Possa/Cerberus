@@ -40,12 +40,12 @@ temptempo = 0
 
 temptempoplay = 0
 playstuck = False
-play = "ataque"
+play = "penalti_nosso"
 playsetup = True
 id0 = 1
 id1 = 2
 idgoleironosso = 0
-playcache = "ataque"
+playcache = "penalti_nosso"
 
 
 betab = 210
@@ -598,7 +598,7 @@ def DecidirPlay():
 
     if not playstuck:
         if temomaisproximo() == "nos":
-            play = "ataque"
+            play = "penalti_nosso"
         else:
             play = "defesa"
 
@@ -619,7 +619,7 @@ def penalti_nosso():
     tempo_inicio = rospy.Time.now()  # Obtém o tempo de início usando o tempo do ROS
     
     # Posiciona a bola no ponto de pênalti (coordenadas específicas da sua configuração)
-    p_bola[0], p_bola[1] = 6000, 0  # (6, 0) é o ponto de pênalti no campo
+    posicionar_bola()
     
     # Espera 10 segundos antes de permitir o chute
     while (rospy.Time.now() - tempo_inicio).to_sec() < 10:  # Verifica a diferença em segundos
@@ -769,7 +769,17 @@ def Goleirorole(idgoleiro, id):
         move(idgoleiro, (v[0], v[1]), 0, velocidadepdist(jogador_aliado[idgoleiro].x, jogador_aliado[idgoleiro].y, v[0], v[1]), 150, 1, 0)
     girar(idgoleiro, p_bola, 0.05)
 
+def posicionar_bola():
+    # Usando a função distancia_bola para encontrar o robô mais próximo da bola
+    id_robo_mais_proximo = temomaisproximo(p_bola)
 
+    # Posiciona a bola lentamente até o ponto de pênalti (6, 0)
+    while distancia_bola() > 100:  # Considera a bola posicionada quando a distância for pequena (100 mm)
+        move(id_robo_mais_proximo, (6000, 0), 0, 0, 0, 0, True)  # Move o robô para empurrar a bola devagar
+        # Atualiza a posição da bola (simulação)
+        p_bola[0] += 1  # Movimento lento em direção à marca do pênalti (ajuste a velocidade conforme necessário)
+
+    print("Bola posicionada na marca do pênalti")
 
 
 
