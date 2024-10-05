@@ -77,10 +77,27 @@ def PlayHalt(g):
     for i in range(g.num_jogadores):
         game.parada(g, i)
 
-#PENALTI ---------------------------------------------------------------
+# PÊNALTI ----------------------------------------------
 
-def PlayPenalti(g):
-    if g.play == "penalti_nosso":
-        penalti_nosso(g)
-    elif g.play == "penalti_deles":
-        penalti_deles(g)  # Para futura implementação
+def PlayPenalti(g, play):
+    if g.playsetup:
+        g.idgoleironosso = Utils.getgoleiro(g, "nosso")
+        g.id0 = 0
+        g.id1 = 2
+        if g.idgoleironosso == 0:
+            g.id0 = 1
+        if g.idgoleironosso == 2:
+            g.id1 = 1
+
+        for i in range(g.num_jogadores):
+            if i == g.idgoleironosso:
+                continue
+            if np.sqrt((g.jogador_inimigo[i].x - g.p_bola[0]) ** 2 + (g.jogador_inimigo[i].y - g.p_bola[1]) ** 2) < np.sqrt((g.jogador_inimigo[g.id0].x - g.p_bola[0]) ** 2 + (g.jogador_inimigo[g.id0].y - g.p_bola[1]) ** 2):
+                g.id1 = g.id0
+                g.id0 = i
+        g.playsetup = False
+        return g
+
+    if play == "penalti_nosso":
+        # Executa a jogada de pênalti do nosso time
+        game.penalti_nosso(g, g.id0)

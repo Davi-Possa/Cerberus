@@ -6,6 +6,7 @@ from math import atan2
 
 import numpy as np
 import rospy
+import time
 from PIL.SpiderImagePlugin import isInt
 from docutils.parsers.rst.states import InterpretedRoleNotImplementedError
 from gazebo_msgs.msg import *
@@ -274,48 +275,40 @@ def parada(g, robotIndex):
 
 
 def DecidirPlay(g):
+
     if not g.playstuck:
         if Utils.temomaisproximo(g) == "nos" or Utils.ladodocampo(g) != g.time:
-            g.play = "ataque"
+            g.play = "penalti_nosso"
         else:
             g.play = "defesa"
-
-    # Verifica se deve executar a jogada de penalti
-    if g.should_penalty:  # Substitua por sua lógica que determina se deve ir para pênalti
-        g.play = "penalti_nosso"  # ou "penalti_deles", dependendo do caso
 
     if g.play != g.playcache:
         g.playcache = g.play
         g.playsetup = True
     return g
 
+
 def SelecionarPlay(g):
     if g.play == "defesa":
         g = Plays.PlayDefesa(g)
-    elif g.play == "ataque":
+    if g.play == "ataque":
         g = Plays.PlayAtaque(g)
-    elif g.play == "halt":
+    if g.play == "halt":
         g = Plays.PlayHalt(g)
-    elif g.play == "penalti_nosso" or g.play == "penalti_deles":  # Checa se a jogada é de pênalti
-        g = Plays.PlayPenalti(g)
-
     return g
 
 
+# PÊNALTI ----------------------------------------------
 
+def penalti_nosso(g):
+    # Chama a função para que o robô mais próximo posicione a bola lentamente
+    Roles.role_posicionar_bola_penalti(g, g.id0)
 
-
-
-
-
-
-
-
-
-
-
-
-
+    # Aguardar 10 segundos após o posicionamento da bola para o chute
+    time.sleep(10)
+    
+    # Chama a função para chutar a bola
+    Roles.role_chutar_penalti(g, g.id0)
 
 
 
@@ -331,7 +324,6 @@ def SelecionarPlay(g):
 if __name__ == "__main__":
     rospy.init_node("test_ssl", anonymous=False)
     sub = rospy.Subscriber("/vision", SSL_DetectionFrame, definir_dados)
-
     if g.time == "yellow":
         for i in range(g.num_jogadores):
             topic = '/robot_yellow_{}/cmd'.format(i)
@@ -340,7 +332,6 @@ if __name__ == "__main__":
             g.goldeles = [-2250, -400, 400]
             g.jogador_aliado = jogador_yellow
             g.jogador_inimigo = jogador_blue
-
     if g.time == "blue":
         for i in range(g.num_jogadores):
             topic = '/robot_blue_{}/cmd'.format(i)
@@ -350,9 +341,13 @@ if __name__ == "__main__":
             g.jogador_aliado = jogador_blue
             g.jogador_inimigo = jogador_yellow
 
+
     r = rospy.Rate(120)
 
     while not rospy.is_shutdown():
+
+
+
         if g.jogador_aliado[0].x == 0:
             print("iniciando")
         else:
@@ -366,13 +361,5 @@ if __name__ == "__main__":
             if g.t - g.temptempoplay > 0:
                 g.temptempoplay = g.t
                 g.preso = [False, False, False]
-                g = DecidirPlay(g)  # Chama a função DecidirPlay
-
-            # Verifica se deve ativar a play de pênalti
-            if deve_chutar_penalti(g):  # Função fictícia para determinar se deve chutar
-                g.play = "penalti_nosso"  # ou "penalti_deles" dependendo do caso
-
-            g = SelecionarPlay(g)  # Chama a função SelecionarPlay
-            PlayPenalti(g)  # Chama a PlayPenalti se aplicável
-
-
+                g = DecidirPlay(g)
+            g = SelecionarPlay(g)

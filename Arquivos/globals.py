@@ -34,15 +34,16 @@ class Globals:
         self.preso = [False, False, False]
         self.temptempo = 0
 
+        self.id_proximo = None
+
         self.temptempoplay = 0
         self.playstuck = False
-        self.play = "ataque"
+        self.play = "penalti_nosso"
         self.playsetup = True
         self.idgoleironosso = 0
-        self.playcache = "ataque"
+        self.playcache = "penalti_nosso"
 
         self.betab = 210
-
 
 
 

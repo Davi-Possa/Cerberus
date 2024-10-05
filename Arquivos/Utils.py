@@ -195,26 +195,3 @@ def calcularvelocidadebola(g):
     g.posbola1 = g.p_bola
     g.velocidadebola = np.array((g.posbola1[0] - g.posbola0[0], g.posbola1[1] - g.posbola0[1]))/(g.t1-g.t0)
     return g
-
-#PENALTI ---------------------------------------------------------------
-
-def robo_mais_proximo_da_bola(g):
-    menor_distancia = float('inf')  # Começa com um valor alto
-    id_robo_mais_proximo = -1
-
-    # Pega as coordenadas da bola a partir de self.p_bola
-    pos_bola = g.p_bola
-    
-    # Itera sobre os jogadores aliados (robôs)
-    for i in range(g.num_jogadores):
-        robo = g.jogador_aliado[i]  # Pega a posição do robô aliado
-        
-        # Calcula a distância entre o robô e a bola
-        distancia = np.sqrt((robo[0] - pos_bola[0])**2 + (robo[1] - pos_bola[1])**2)
-        
-        # Verifica se a distância atual é a menor encontrada
-        if distancia < menor_distancia:
-            menor_distancia = distancia
-            id_robo_mais_proximo = i  # Atualiza o índice do robô mais próximo
-    
-    return id_robo_mais_proximo

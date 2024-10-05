@@ -4,6 +4,7 @@ import numpy as np
 import VetOp
 import game
 import Tatica
+import Plays
 
 def Pegarpasserole(g, id2, id):
     if g.preso[id2] == True:
@@ -110,15 +111,19 @@ def Marcarrole(g, idmarca, idpasse):
             return True
         else:
             return False
-        
-#PENALTI ---------------------------------------------------------------
 
-def role_posicionar_bola_penalti(g):
-    return posicionar_bola_para_penalti(g)
+# PÊNALTI ----------------------------------------------
 
-def role_chutar_penalti(g, id_robopenalti):
-    if chutar(g, id_robopenalti):
-        print("Pênalti cobrado com sucesso")
+def role_posicionar_bola_penalti(g, id0):
+    # Robô mais próximo da bola
+    g.id_proximo = g.id0  
+    posicao_penalti = [6, 0]
 
+    # Move o robô devagar para a marca do pênalti (usar velocidade mínima)
+    game.move(g, g.id_proximo, posicao_penalti, g.v_min)
+    print("Bola posicionada com sucesso")
 
-
+def role_chutar_penalti(g, id0):
+    # Robô mais próximo chuta a bola
+    g.id_proximo = g.id0  
+    game.chutar(g, g.id_proximo)  # Chama a função de chute já existente no game.py
