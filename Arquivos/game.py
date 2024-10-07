@@ -295,6 +295,8 @@ def SelecionarPlay(g):
         g = Plays.PlayAtaque(g)
     if g.play == "halt":
         g = Plays.PlayHalt(g)
+    if g.play == "penalti_nosso":
+        g = Plays.PlayPenalti(g, "penalti_nosso")
     return g
 
 
@@ -313,6 +315,7 @@ def penalti_nosso(g):
     # Verifica a flag para saber se a bola está posicionada
     if g.bola_posicionada:
         Roles.role_chutar_penalti(g)  # Chuta a bola para o gol
+
 
 
 

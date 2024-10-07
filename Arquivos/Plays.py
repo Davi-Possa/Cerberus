@@ -80,6 +80,7 @@ def PlayHalt(g):
 # PÊNALTI ----------------------------------------------
 
 def PlayPenalti(g, play):
+    print("--------------------CHEGAMO AQUI--------------------")
     if g.playsetup:
         g.idgoleironosso = Utils.getgoleiro(g, "nosso")
         g.id0 = 0
@@ -100,4 +101,4 @@ def PlayPenalti(g, play):
 
     if play == "penalti_nosso":
         # Executa a jogada de pênalti do nosso time
-        game.penalti_nosso(g, g.id0)
+        game.penalti_nosso(g)
