@@ -33,7 +33,7 @@ class Globals:
         self.velocidadebola = np.array((0, 0))
         self.preso = [False, False, False]
         self.temptempo = 0
-
+        self.bola_posicionada = False
         self.id_proximo = None
 
         self.temptempoplay = 0

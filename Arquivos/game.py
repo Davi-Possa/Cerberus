@@ -301,14 +301,18 @@ def SelecionarPlay(g):
 # PÊNALTI ----------------------------------------------
 
 def penalti_nosso(g):
-    # Chama a função para que o robô mais próximo posicione a bola lentamente
-    Roles.role_posicionar_bola_penalti(g, g.id0)
+    """
+    Função para executar a lógica de cobrança de pênalti do nosso time.
+    """
+    posicao_penalti = (50, 0)  # Coordenadas x, y da marca do pênalti
 
-    # Aguardar 10 segundos após o posicionamento da bola para o chute
+    # Chama a função para mover a bola até a marca do pênalti
+    Roles.role_posicionar_bola(g, posicao_penalti)
+
     time.sleep(10)
-    
-    # Chama a função para chutar a bola
-    Roles.role_chutar_penalti(g, g.id0)
+    # Verifica a flag para saber se a bola está posicionada
+    if g.bola_posicionada:
+        Roles.role_chutar_penalti(g)  # Chuta a bola para o gol
 
 
 

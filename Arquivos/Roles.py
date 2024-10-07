@@ -114,14 +114,24 @@ def Marcarrole(g, idmarca, idpasse):
 
 # PÊNALTI ----------------------------------------------
 
-def role_posicionar_bola_penalti(g, id0):
-    # Robô mais próximo da bola
-    g.id_proximo = g.id0  
-    posicao_penalti = [6, 0]
+# Roles.py
 
-    # Move o robô devagar para a marca do pênalti (usar velocidade mínima)
-    game.move(g, g.id_proximo, posicao_penalti, g.v_min)
-    print("Bola posicionada com sucesso")
+def role_posicionar_bola(g, posicao_destino):
+    """
+    Função para mover a bola para a posição desejada.
+    """
+    tolerancia_posicao = 0.5  # Tolerância para considerar que a bola está posicionada
+
+    # Move o robô até a bola e leva a bola para a posição destino usando a função 'move'
+    game.move(g, g.id0, posicao_destino, evitarbola=True)
+
+    # Verifica se a bola está próxima da posição desejada
+    distancia_bola = np.sqrt((g.p_bola[0] - posicao_destino[0])**2 + (g.p_bola[1] - posicao_destino[1])**2)
+    if distancia_bola <= tolerancia_posicao:
+        g.bola_posicionada = True  # Define a flag como True quando a bola está na posição correta
+    else:
+        g.bola_posicionada = False  # Define a flag como False caso contrário
+
 
 def role_chutar_penalti(g, id0):
     # Robô mais próximo chuta a bola
